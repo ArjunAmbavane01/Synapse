@@ -31,7 +31,7 @@ const signinSchema = z.object({
 userRouter.post("/signup", async (req: Request, res: Response) => {
   const validation = signupBodySchema.safeParse(req.body);
   if (!validation.success) {
-    res.status(400).json({
+    res.status(411).json({
       message: "Validation error",
       errors: validation.error.errors.map((err) => ({
         path: err.path,
@@ -45,7 +45,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
   try {
     const isUser = await User.findOne({ username });
     if (isUser) {
-      res.status(409).json({
+      res.status(403).json({
         message: "User already exists with this username",
       });
       return;
@@ -66,11 +66,12 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
     });
   }
 });
+
 userRouter.post("/signin", async (req: Request, res: Response) => {
   const validation = signinSchema.safeParse(req.body);
 
   if (!validation.success) {
-    res.status(400).json({
+    res.status(411).json({
       message: "Validation error",
       errors: validation.error.errors.map((err) => ({
         path: err.path,
